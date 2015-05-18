@@ -1,0 +1,29 @@
+@CHARSET "ISO-8859-1";
+
+
+#body {
+	margin-top:5px;
+}
+
+#playerSearch {
+	background-color: #FAFAFA;
+    border:solid 1px #000000;
+    border-radius:10px;
+    
+    margin:auto;
+    display:block;
+    
+    padding:10px 15px 10px 15px;
+    width:90%;
+    
+    -webkit-transition : border 300ms ease-out;
+    -moz-transition : border 300ms ease-out;
+    -o-transition : border 300ms ease-out;
+    transition : border 300ms ease-out;
+    
+    font-size:24pt;
+}
+
+#playerSearch:focus {
+	border:solid 1px #2E9AFE;
+}
