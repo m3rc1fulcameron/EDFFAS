@@ -5,9 +5,6 @@
 	require_once "lib/secureSessions.lib.php";
 	require_once "lib/edffasUnique.lib.php";
 	require_once "lib/m3Common.lib.php";
-	
-	/*$mySQLConfig = parse_ini_file("cfg/mysqlConf.ini");
-	initializeMySQLConnection($mySQLConfig);*/
 ?>
 
 <!DOCTYPE html>

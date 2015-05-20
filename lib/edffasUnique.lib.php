@@ -21,4 +21,28 @@
 		
 		return json_encode($cleanResult);
 	}
+	
+	function playerLookupBasic_secure($dbh, $playerName) {
+		$query = "SELECT username,rank,faction FROM mainplayertable WHERE username LIKE :username";
+	
+		$queryHandle = $dbh->prepare($query);
+		$queryHandle->bindParam(':username', $playerName);
+		$queryHandle->execute();
+	
+		$result = $queryHandle->fetch();
+		
+		return json_encode($result);
+	}
+	
+	function playerLookupAll_secure($dbh, $playerName) {
+		$query = "SELECT username,rank,ship,faction,lastKnownPosition,notes FROM mainplayertable WHERE username LIKE :username";
+	
+		$queryHandle = $dbh->prepare($query);
+		$queryHandle->bindParam(':username', $playerName);
+		$queryHandle->execute();
+	
+		$result = $queryHandle->fetch();
+
+		return json_encode($result);
+	}
 ?>
