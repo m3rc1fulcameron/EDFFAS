@@ -2,10 +2,16 @@
 
 body {
 	margin:0px;
+	background-color: #E6E6E6;
+}
+
+.text,a,p,h1,h2,h3,h4,h5,h6,li,thead,td {
+	font-family:Verdana, Helvetica, Arial, sans-serif;
 }
 
 nav {
 	background-color:red;
+	background-color: #FE642E;
 }
 
 nav ul {
@@ -17,11 +23,18 @@ nav ul li {
 	display:inline-block;
 }
 
-nav ul li a, nav ul li form {
+nav ul li a {
 	padding:10px 20px 10px 20px;
 	display:block;
+	color: #FFFFFF;
+	text-decoration:none;
+}
+
+nav ul li form {
+	padding:0px 10px 0px 10px;
 }
 
 nav ul li a:hover {
-	background-color:blue;
+	background-color: #DF3A01;
+	text-decoration:underline;
 }

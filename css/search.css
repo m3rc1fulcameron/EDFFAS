@@ -6,15 +6,10 @@
 }
 
 #playerSearch {
-	background-color: #FAFAFA;
-    border:solid 1px #000000;
+	padding:10px 15px 10px 15px;
     border-radius:10px;
     
-    margin:auto;
     display:block;
-    
-    padding:10px 15px 10px 15px;
-    width:90%;
     
     -webkit-transition : border 300ms ease-out;
     -moz-transition : border 300ms ease-out;
@@ -22,6 +17,25 @@
     transition : border 300ms ease-out;
     
     font-size:24pt;
+}
+
+#playerSearch, #suggestions {
+	border:solid 1px #000000;
+	width:90%;
+	margin:auto;
+}
+
+#suggestions {
+	background-color: #FFFFFF;
+	display:none;
+}
+
+.suggestionRow {
+	padding:10px 15px 10px 15px;
+}
+
+.suggestionRow:hover {
+	background-color: #FE642E;
 }
 
 #playerSearch:focus {
