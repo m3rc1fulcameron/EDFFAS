@@ -18,6 +18,7 @@
 		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="js/underscore-min.js"></script>
 		<script src="js/loginShowHide.js"></script>
+		<script src="js/playerCards.js"></script>
 		<script src="js/autoSuggest.js"></script>
 	</head>
 	
@@ -28,7 +29,7 @@
 					<li><a href="index.php" title="Search">Search</a></li><!--
 					--><li><a href="submit.php" title="Submit Names">Submissions</a></li><!--
 					--><li>
-						<form id="loginForm">
+						<form id="loginForm" action="index.php?action=login" method="POST">
 							<input type="text" name="username" placeholder="Username">
 							<input type="password" name="password" placeholder="Password">
 							<input type="hidden" name="csrfCookie" value="">
@@ -44,6 +45,9 @@
 			<input type="search" name="playerSeach" id="playerSearch" placeholder="Search for player by name">
 			
 			<div id="suggestions">
+			</div>
+			
+			<div id="results">
 			</div>
 		</div>
 		

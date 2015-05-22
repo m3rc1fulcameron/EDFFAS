@@ -1,19 +1,19 @@
-function spawnPlayerCard(username) {
-	try {
-		$.post('api.php?apiTarget=all', { playerName : $('#playerSearch').val()}).done(function(data) {
-			results = $.parseJSON(data);
-			
-			alert('Player: ' + results.username + '\nFaction: ' + results.faction + '\nRank: ' + results.rank + '\nShip: ' + results.ship + '\nLKS: ' + results.lastKnownPosition + '\nNotes: ' + results.notes);
-		});
-	} catch (e) {
-		alert(e);
-	}
-};
+function search(username) {
+	updatePlayerCard(username);
+	$('#suggestions').css('display','none');
+}
 
 $(document).ready(function() {
 	$('#playerSearch').val('');
 	
+	$('#playerSearch').keydown(function(event) {
+		if (event.which == 13) {
+			search($('#playerSearch').val());
+		}
+	})
+	
 	$('#playerSearch').keyup(_.debounce(function() {
+		
 		if ($('#playerSearch').val() != '') {
 			$.post('api.php?apiTarget=nameOnly', { playerName : $('#playerSearch').val()}).done(function(data) {
 				list = '';				
@@ -30,8 +30,7 @@ $(document).ready(function() {
 					
 					$('.suggestionRow').click(function() {
 						$('#playerSearch').val($(this).text());
-						$('#suggestions').css('display','none');
-						spawnPlayerCard($(this).text());
+						search($(this).text());
 					});
 				} else {
 					$('#suggestions').slideUp(150);

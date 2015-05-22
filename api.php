@@ -22,6 +22,14 @@
 					case 'all':
 						print(playerLookupAll_secure($dbh,$_POST['playerName']));
 						break;
+						
+					case 'wanted':
+						print(playerLookupWanted_secure($dbh,$_POST['playerName']));
+						break;
+						
+					case 'bounties':
+						print(playerLookupBounties_secure($dbh,$_POST['playerName']));
+						break;
 							
 					case 'default':
 						die('[{"error" : "Invalid API Target"}]');

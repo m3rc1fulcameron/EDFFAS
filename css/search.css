@@ -19,10 +19,13 @@
     font-size:24pt;
 }
 
-#playerSearch, #suggestions {
-	border:solid 1px #000000;
+#playerSearch, #suggestions, .playerCardContainer {
 	width:90%;
 	margin:auto;
+}
+
+#playerSearch, #suggestions {
+	border:solid 1px #000000;
 }
 
 #suggestions {
@@ -40,4 +43,40 @@
 
 #playerSearch:focus {
 	border:solid 1px #2E9AFE;
+}
+
+.playerCardContainer {
+	margin-top:10px;
+	/*display:none; Uncomment when animations work*/
+}
+
+.playerCardBody {
+	background-color:white;
+	padding:10px 5px 10px 5px;
+}
+
+.playerCardAdvisory {
+	color: #8A0808;
+	background-color: #FA5858;
+}
+
+.playerCardAdvisory p {
+	margin:0px;
+	padding:10px 5px 10px 5px;
+	font-weight:bold;
+}
+
+.playerCardInfo {
+	display:inline-block;
+	width:69.5%;
+}
+
+.playerCardLastSeen {
+	display:inline-block;
+	width:30%;
+	text-align:right;
+}
+
+.playerCardNotes {
+	
 }
