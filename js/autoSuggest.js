@@ -1,5 +1,5 @@
 function search(username) {
-	updatePlayerCard(username);
+	createCard(username);
 	$('#suggestions').css('display','none');
 }
 

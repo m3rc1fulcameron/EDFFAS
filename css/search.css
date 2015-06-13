@@ -45,9 +45,9 @@
 	border:solid 1px #2E9AFE;
 }
 
-.playerCardContainer {
-	margin-top:10px;
-	/*display:none; Uncomment when animations work*/
+#cardDisplay {
+	width:90%;
+	margin:auto;
 }
 
 .playerCardBody {
@@ -60,7 +60,12 @@
 	background-color: #FA5858;
 }
 
-.playerCardAdvisory p {
+.playerCardBounty {
+	color: #B45F04;
+	background-color: #FE9A2E;
+}
+
+.playerCardAdvisory p, .playerCardBounty p {
 	margin:0px;
 	padding:10px 5px 10px 5px;
 	font-weight:bold;
@@ -75,8 +80,4 @@
 	display:inline-block;
 	width:30%;
 	text-align:right;
-}
-
-.playerCardNotes {
-	
 }

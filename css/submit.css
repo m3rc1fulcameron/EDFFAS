@@ -1,0 +1,13 @@
+@CHARSET "ISO-8859-1";
+
+#submitFormWrapper {
+	width: 90%;
+	margin:auto;
+	padding:15px 0px 15px 0px;
+	text-align:center;
+}
+
+#submitForm input,#submitForm select {
+	padding:3px;
+	font-size:15px;
+}

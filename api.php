@@ -1,46 +1,30 @@
 <?php
-	if ($_SERVER["REQUEST_METHOD"] == "POST" || true) {
-		if (isset($_GET['apiTarget'])) {
-			if (isset($_POST['playerName']) && $_POST['playerName'] !== '') {
-				define('CALLED', true);
-				
-				require_once 'lib/mysql.lib.php';
-				require_once 'lib/edffasUnique.lib.php';
-				
-				$mysqlConfig = parse_ini_file("cfg/mysqlConf.ini");	
-				$dbh = newDBHObject($mysqlConfig);
-				
-				switch ($_GET['apiTarget']) {
-					case 'nameOnly':			
-						print(wildCardPlayerLookupNameOnly_secure($dbh,$_POST['playerName']));	
-						break;
-							
-					case 'basic':
-						print(playerLookupBasic_secure($dbh,$_POST['playerName']));
-						break;
-					
-					case 'all':
-						print(playerLookupAll_secure($dbh,$_POST['playerName']));
-						break;
-						
-					case 'wanted':
-						print(playerLookupWanted_secure($dbh,$_POST['playerName']));
-						break;
-						
-					case 'bounties':
-						print(playerLookupBounties_secure($dbh,$_POST['playerName']));
-						break;
-							
-					case 'default':
-						die('[{"error" : "Invalid API Target"}]');
-				}
-			} else {
-				die('[{"error" : "Missing POST parameter \'playerName\'"}]');
+	if (isset($_REQUEST['apiTarget'])) {
+		if (isset($_REQUEST['name']) && $_REQUEST['name'] !== '') {
+			define('CALLED', true);
+			
+			require_once 'lib/mysql.lib.php';
+			
+			$mysqlConfig = parse_ini_file("cfg/mysqlConf.ini");
+			$dbh = newDBHObject($mysqlConfig);
+			
+			require_once 'lib/edffasUnique.lib.php';
+			require_once 'lib/api.lib.php';
+			
+			switch ($_REQUEST['apiTarget']) {
+				case 'wildcardByName':			
+					print(json_encode(wildcardPlayerLookupByName($_REQUEST['name'])));
+					break;
+				case 'comprehensive':
+					print(json_encode(playerComprehensiveLookupByName($_REQUEST['name'])));
+					break;
+				case 'default':
+					die('[{"error" : "apiInvalidTarget"}]');
 			}
 		} else {
-			die('[{"error" : "Missing GET parameter \'apiTarget\'"}]');
+			die('{"error" : "missingParameter"}');
 		}
 	} else {
-		die('[{"error" : "Invalid Request Type"}]');
+		die('[{"error" : "apiInvalidTarget"}]');
 	}
 ?>

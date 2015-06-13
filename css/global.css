@@ -9,8 +9,11 @@ body {
 	font-family:Verdana, Helvetica, Arial, sans-serif;
 }
 
+.contentBackground {
+	background-color:white;
+}
+
 nav {
-	background-color:red;
 	background-color: #FE642E;
 }
 
@@ -37,4 +40,9 @@ nav ul li form {
 nav ul li a:hover {
 	background-color: #DF3A01;
 	text-decoration:underline;
+}
+
+.textBlob {
+	padding:3px;
+	border-radius:5px;
 }

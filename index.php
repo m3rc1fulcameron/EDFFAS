@@ -15,10 +15,11 @@
 		<link rel="stylesheet" type="text/css" href="css/global.css">
 		<link rel="stylesheet" type="text/css" href="css/search.css">
 		
+		<?php spawnRankListJS(); ?>
 		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="js/underscore-min.js"></script>
 		<script src="js/loginShowHide.js"></script>
-		<script src="js/playerCards.js"></script>
+		<script src="js/pcards0.0.2.js"></script>
 		<script src="js/autoSuggest.js"></script>
 	</head>
 	
@@ -47,7 +48,7 @@
 			<div id="suggestions">
 			</div>
 			
-			<div id="results">
+			<div id="cardDisplay">
 			</div>
 		</div>
 		
