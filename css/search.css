@@ -50,22 +50,27 @@
 	margin:auto;
 }
 
+.playerCardContainer {
+	margin-top:10px;
+	display:none;
+}
+
 .playerCardBody {
 	background-color:white;
 	padding:10px 5px 10px 5px;
 }
 
-.playerCardAdvisory {
+.wantedAdvisory p {
 	color: #8A0808;
 	background-color: #FA5858;
 }
 
-.playerCardBounty {
+.bountyAdvisory p {
 	color: #B45F04;
 	background-color: #FE9A2E;
 }
 
-.playerCardAdvisory p, .playerCardBounty p {
+.advisory p, .advisory p {
 	margin:0px;
 	padding:10px 5px 10px 5px;
 	font-weight:bold;

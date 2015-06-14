@@ -9,20 +9,25 @@ $(document).ready(function() {
 	$('#playerSearch').keydown(function(event) {
 		if (event.which == 13) {
 			search($('#playerSearch').val());
+			$('#playerSearch').blur();
 		}
-	})
+	});
 	
 	$('#playerSearch').keyup(_.debounce(function() {
 		
-		if ($('#playerSearch').val() != '') {
-			$.post('api.php?apiTarget=nameOnly', { playerName : $('#playerSearch').val()}).done(function(data) {
-				list = '';				
+		if ($('#playerSearch').val().length > 1 && ($('#playerSearch').is(':focus'))) {
+			$.post('api.php', { 'apiTarget' : 'wildcardByName', 'name' : $('#playerSearch').val()}).done(function(data) {
+				data = $.parseJSON(data);
 				
-				$.each($.parseJSON(data),function(key,val) {					
-					list += '<div id=\"suggestionRow' + key + '\" class=\"suggestionRow text\">' + val + '</div>';
-				});
-				
-				if (list !== '') {
+				if (data.error) {
+					$('#suggestions').slideUp(150);
+				} else {
+					list = '';				
+					
+					$.each(data,function(key,val) {					
+						list += '<div id=\"suggestionRow' + key + '\" class=\"suggestionRow text\">' + val.name + '</div>';
+					});
+					
 					$('#suggestions').html(list);
 					//$('#suggestions').css('display','block');
 					$('#suggestions').slideDown(150);
@@ -32,9 +37,7 @@ $(document).ready(function() {
 						$('#playerSearch').val($(this).text());
 						search($(this).text());
 					});
-				} else {
-					$('#suggestions').slideUp(150);
-				};
+				}
 			});
 		} else {
 			$('#suggestions').slideUp(150);

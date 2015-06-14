@@ -4,13 +4,17 @@
 		
 		$partialName = "{$partialName}%";
 		
-		$query = "SELECT username FROM players WHERE username LIKE :username LIMIT 10";
+		$query = "SELECT name FROM players WHERE name LIKE :partialName LIMIT 10";
 		
 		$queryHandle = $dbh->prepare($query);
-		$queryHandle->bindParam(':username', $partialName);
+		$queryHandle->bindParam(':partialName', $partialName);
 		$queryHandle->execute();
 		
 		$results = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
+		
+		if (sizeof($results) == 0) {
+			$results = array("error" => "missingPlayer");
+		}
 		
 		return $results;
 	}
@@ -31,7 +35,7 @@
 	function factionLookupByID($id) {
 		global $dbh;
 		
-		$query = "SELECT factions.name,superpowers.backgroundColor,superpowers.textColor FROM factions LEFT JOIN superpowers ON factions.allegianceID = superpowers.id WHERE factions.id = :id";
+		$query = "SELECT factions.name,factions.abbreviatedName,superpowers.backgroundColor,superpowers.textColor FROM factions LEFT JOIN superpowers ON factions.allegianceID = superpowers.id WHERE factions.id = :id";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(":id",$id);
 		$queryHandle->execute();

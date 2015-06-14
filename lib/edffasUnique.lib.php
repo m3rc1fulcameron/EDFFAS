@@ -37,18 +37,19 @@
 	function spawnFactionListDropMenu() {
 		global $dbh;
 		
-		$query = "SELECT factions.factionID,factions.factionName,factions.factionAbbreviation,superpowers.color FROM factions LEFT JOIN superpowers ON factions.allegianceID = superpowers.id ORDER BY factions.allegianceID";
+		$query = "SELECT factions.id,factions.name,factions.abbreviatedName,superpowers.backgroundColor,superpowers.textColor FROM factions LEFT JOIN superpowers ON factions.allegianceID = superpowers.id ORDER BY factions.allegianceID";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->execute();
 		
-		$result = $queryHandle->fetchAll();
+		$result = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
 		
 		$output = "<select name=\"faction\"><option value=\"null\" disabled selected>Player Faction</option><option value=\"-1\">None/Unknown</option>";
 	
 		foreach ($result as $faction) {
-			if (!$faction['color']) { $faction['color'] = "#FFFFFF"; }
+			if (!$faction['backgroundColor']) { $faction['backgroundColor'] = "#FFFFFF"; }
+			if (!$faction['textColor']) { $faction['textColor'] = "#000000"; }
 			
-			$output .= "<option value = \"" . $faction['factionID'] . "\" style=\"background-color:" . $faction['color'] . ";\">" . $faction['factionName'] . " [" . $faction['factionAbbreviation'] . "]</option>";
+			$output .= "<option value = \"" . $faction['id'] . "\" style=\"background-color:" . $faction['backgroundColor'] . ";color:" . $faction['textColor'] .";\">" . $faction['name'] . " [" . $faction['abbreviatedName'] . "]</option>";
 		}
 		
 		$output .= "</select>";

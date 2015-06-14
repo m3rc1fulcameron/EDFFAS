@@ -19,12 +19,12 @@
 					print(json_encode(playerComprehensiveLookupByName($_REQUEST['name'])));
 					break;
 				case 'default':
-					die('[{"error" : "apiInvalidTarget"}]');
+					die('{"error" : "apiInvalidTarget"}');
 			}
 		} else {
 			die('{"error" : "missingParameter"}');
 		}
 	} else {
-		die('[{"error" : "apiInvalidTarget"}]');
+		die('{"error" : "apiInvalidTarget"}');
 	}
 ?>
