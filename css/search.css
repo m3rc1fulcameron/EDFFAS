@@ -86,3 +86,13 @@
 	width:30%;
 	text-align:right;
 }
+
+.playerCardControls {
+	background-color:white;
+	text-align:right;
+	padding:5px;
+}
+
+.playerCardControls a {
+	text-decoration:none;
+}

@@ -1,6 +1,5 @@
 function search(username) {
 	createCard(username);
-	$('#suggestions').css('display','none');
 }
 
 $(document).ready(function() {
@@ -33,7 +32,7 @@ $(document).ready(function() {
 					$('#suggestions').slideDown(150);
 					//$('#suggestions').html(list);
 					
-					$('.suggestionRow').click(function() {
+					$('.suggestionRow').mousedown(function() {
 						$('#playerSearch').val($(this).text());
 						search($(this).text());
 					});
@@ -43,4 +42,8 @@ $(document).ready(function() {
 			$('#suggestions').slideUp(150);
 		};
 	}, 250));
+	
+	$('#playerSearch').blur(function() {
+		$('#suggestions').slideUp(150);
+	})
 });
