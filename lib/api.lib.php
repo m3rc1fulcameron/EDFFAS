@@ -1,13 +1,14 @@
 <?php 
-	function wildcardPlayerLookupByName($partialName) {
+	function wildcardPlayerLookupByName($partialName, $rows = 10) {
 		global $dbh;
 		
 		$partialName = "{$partialName}%";
 		
-		$query = "SELECT name FROM players WHERE name LIKE :partialName LIMIT 10";
+		$query = "SELECT name FROM players WHERE name LIKE :partialName LIMIT :rows";
 		
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(':partialName', $partialName);
+		$queryHandle->bindParam(':rows', $rows);
 		$queryHandle->execute();
 		
 		$results = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
@@ -22,6 +23,7 @@
 	function powerLookupByID($id) {
 		global $dbh;
 		
+		//Get power name and text colors.
 		$query = "SELECT powers.name,superpowers.backgroundColor,superpowers.textColor FROM powers LEFT JOIN superpowers ON powers.allegianceID = superpowers.id WHERE powers.id = :id";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(":id",$id);
@@ -35,6 +37,7 @@
 	function factionLookupByID($id) {
 		global $dbh;
 		
+		//Get faction name, abbreviated faction name, and text colors.
 		$query = "SELECT factions.name,factions.abbreviatedName,superpowers.backgroundColor,superpowers.textColor FROM factions LEFT JOIN superpowers ON factions.allegianceID = superpowers.id WHERE factions.id = :id";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(":id",$id);
@@ -48,6 +51,7 @@
 	function playerWantedAdvisoryLookupByID($id) {
 		global $dbh;
 		
+		//Get faction name, faction abbreviated name, and reason.
 		$query = "SELECT factions.name AS creator,factions.abbreviatedName AS creatorAbbreviatedName,wantedadvisories.reason FROM wantedadvisories LEFT JOIN factions ON wantedadvisories.factionID = factions.id WHERE wantedadvisories.targetPlayerID = :id";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(":id",$id);
@@ -61,6 +65,7 @@
 	function playerBountyLookupByID($id) {
 		global $dbh;
 		
+		//Get creator name, amount, and reason.
 		$query = "SELECT players.name AS creator,bounties.amount,bounties.reason FROM bounties LEFT JOIN players ON bounties.postPlayerID = players.id WHERE bounties.targetPlayerID = :id";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(":id",$id);
@@ -74,6 +79,7 @@
 	function playerBasicLookupByName($name) {
 		global $dbh;
 		
+		//Get name, ID, factionID, powerID, notes, rank name, and ship name.
 		$query = "SELECT players.name,players.id,players.factionID,players.powerID,players.notes,ranks.name AS rank,ships.name AS ship FROM players LEFT JOIN ranks ON players.rankID = ranks.id LEFT JOIN ships ON players.shipID = ships.id WHERE players.name = :name";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(":name",$name);
@@ -82,6 +88,10 @@
 		$results = $queryHandle->fetch(PDO::FETCH_ASSOC);
 		
 		return $results;
+	}
+	
+	function playerSpotsLookupByID($id,$rows) {
+		
 	}
 	
 	function playerComprehensiveLookupByName($name) {

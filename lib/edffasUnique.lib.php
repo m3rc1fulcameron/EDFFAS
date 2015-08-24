@@ -48,8 +48,13 @@
 		foreach ($result as $faction) {
 			if (!$faction['backgroundColor']) { $faction['backgroundColor'] = "#FFFFFF"; }
 			if (!$faction['textColor']) { $faction['textColor'] = "#000000"; }
+			if (isset($faction['abbreviatedName']) && $faction['abbreviatedName'] != '') {
+				$faction['abbreviatedName'] = " [" . $faction['abbreviatedName'] . "]";
+			} else {
+				$faction['abbreviatedName'] = '';
+			}
 			
-			$output .= "<option value = \"" . $faction['id'] . "\" style=\"background-color:" . $faction['backgroundColor'] . ";color:" . $faction['textColor'] .";\">" . $faction['name'] . " [" . $faction['abbreviatedName'] . "]</option>";
+			$output .= "<option value = \"" . $faction['id'] . "\" style=\"background-color:" . $faction['backgroundColor'] . ";color:" . $faction['textColor'] .";\">" . $faction['name'] . $faction['abbreviatedName'] . "</option>";
 		}
 		
 		$output .= "</select>";
@@ -66,7 +71,7 @@
 	
 		$result = $queryHandle->fetchAll();
 	
-		$output = "<select name=\"ship\"><option value=\"null\" disabled selected>Player Ship</option><option value=\"1\">Unknown</option>";
+		$output = "<select name=\"ship\"><option value=\"null\" disabled selected>Player Ship</option><option value=\"-1\">Unknown</option>";
 	
 		foreach ($result as $ship) {
 			$output .= "<option value = \"" . $ship['id'] . "\">" . $ship['name'] . "</option>";
@@ -80,7 +85,7 @@
 	function spawnPowerListDropMenu() {
 		global $dbh;
 	
-		$query = "SELECT powers.id,powers.name,superpowers.color FROM powers LEFT JOIN superpowers ON powers.allegianceID = superpowers.id ORDER BY powers.allegianceID";
+		$query = "SELECT powers.id,powers.name,superpowers.backgroundColor,superpowers.textColor FROM powers LEFT JOIN superpowers ON powers.allegianceID = superpowers.id ORDER BY powers.allegianceID";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->execute();
 	
@@ -89,9 +94,10 @@
 		$output = "<select name=\"power\"><option value=\"null\" disabled selected>Player Power</option>";
 	
 		foreach ($result as $power) {
-			if (!$power['color']) { $power['color'] = "#FFFFFF"; }
+			if (!$power['backgroundColor']) { $power['backgroundColor'] = "#FFFFFF"; }
+			if (!$power['textColor']) { $power['textColor'] = "#000000"; }
 			
-			$output .= "<option value =\"" . $power['id'] . "\" style=\"background-color:" . $power['color'] . ";\">" . $power['name'] . "</option>";
+			$output .= "<option value = \"" . $power['id'] . "\" style=\"background-color:" . $power['backgroundColor'] . ";color:" . $power['textColor'] .";\">" . $power['name'] . "</option>";
 		}
 	
 		$output .= "</select>";
