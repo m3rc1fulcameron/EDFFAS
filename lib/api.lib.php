@@ -2,16 +2,16 @@
 	function wildcardPlayerLookupByName($partialName, $rows = 10) {
 		global $dbh;
 		
-		$partialName = "{$partialName}%";
+		$partialName = "$partialName%";
 		
-		$query = "SELECT name FROM players WHERE name LIKE :partialName LIMIT :rows";
+		$query = "SELECT name FROM players WHERE name LIKE :partialName ORDER BY id ASC LIMIT :rows";
 		
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(':partialName', $partialName);
-		$queryHandle->bindParam(':rows', $rows);
+		$queryHandle->bindParam(':rows', $rows, PDO::PARAM_INT);
 		$queryHandle->execute();
 		
-		$results = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
+		$results = $queryHandle->fetchAll();
 		
 		if (sizeof($results) == 0) {
 			$results = array("error" => "missingPlayer");

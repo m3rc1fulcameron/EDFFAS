@@ -41,7 +41,7 @@ function spawnCard(player) {
 	
 	//Wanted Advisories
 	if (player.wantedAdvisories) {
-		if (!$(cardSelector + ' .bountyAdvisory').length) {
+		if (!$(cardSelector + ' .wantedAdvisory').length) {
 			$(cardSelector).prepend('<div class="advisory wantedAdvisory"></div>');
 		}
 		
@@ -60,7 +60,7 @@ function spawnCard(player) {
 		output += '</p>';
 		
 		$(cardSelector + ' .wantedAdvisory').html(output);
-	} else if (!$(cardSelector + ' .wantedAdvisory').length) {
+	} else if ($(cardSelector + ' .wantedAdvisory').length) {
 		$(cardSelector + ' .wantedAdvisory').remove();
 	}
 	
@@ -73,7 +73,7 @@ function spawnCard(player) {
 		var output = '<p>';
 		
 		$.each(player.bounties,function(key,val) {
-			output += 'ADVISORY: Bounty of $' + Number(val.amount).toLocaleString('en'); + ' posted by ' + val.creator;
+			output += 'ADVISORY: Bounty of $' + Number(val.amount).toLocaleString('en') + ' posted by ' + val.creator;
 			
 			if (val.reason) {
 				output += '; Reason: "' + val.reason + '"<br>';
@@ -85,7 +85,7 @@ function spawnCard(player) {
 		output += '</p>';
 		
 		$(cardSelector + ' .bountyAdvisory').html(output);
-	} else if (!$(cardSelector + ' .bountyAdvisory').length) {
+	} else if ($(cardSelector + ' .bountyAdvisory').length) {
 		$(cardSelector + ' .bountyAdvisory').remove();
 	}
 	
@@ -111,7 +111,7 @@ function spawnCard(player) {
 	}
 	
 	var notes = '';
-	alert
+	
 	if (player.notes) {
 		notes = '\
 			<div class="playerCardNotes">\
