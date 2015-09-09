@@ -6,7 +6,7 @@
 		
 		private function stringLen($rule) {
 			if (!isset($rule["inputName"]) || !isset($this->input[$rule["inputName"]])) {
-				user_error("Invalid rule structure: inputName undefined or no matching entry in table.",E_USER_WARNING);
+				array_push($this->errors, (isset($rule["failMsg"]) ? $rule["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
 				return false;
 			}
 			
@@ -20,14 +20,14 @@
 			
 			if (isset($rule["methodArgs"]["len"]["max"]) && $rule["methodArgs"]["len"]["max"] !== -1) {
 				if (strlen($string) >= $rule["methodArgs"]["len"]["max"]) {
-					array_push($this->errors, (isset($rule["methodArgs"]["len"]["failMsg"]) ? $rule["methodArgs"]["len"]["failMsg"]:"Validation error: supplied string is too long."),E_USER_NOTICE);
+					array_push($this->errors, (isset($rule["methodArgs"]["len"]["failMsg"]) ? $rule["methodArgs"]["len"]["failMsg"]:"Validation error: supplied string is too long."));
 				}
 			}
 		}
 		
 		private function matches($rule) {
 			if (!isset($rule["methodArgs"]["strings"]) || count($rule["methodArgs"]["strings"]) <2) {
-				user_error("Invalid rule structure: must supply at least two strings to compare.",E_USER_WARNING);
+				array_push($this->errors, "Invalid rule structure: must supply at least two strings to compare.");
 				return false;
 			}
 			
@@ -35,7 +35,7 @@
 			
 			foreach($strings as $string) {
 				if (!isset($this->input[$string])) {
-					user_error("Invalid rule structure: input '" . $string . "' does not exist in input table.",E_USER_WARNING);
+					array_push($this->errors, "Invalid rule structure: input '" . $string . "' does not exist in input table.");
 					return false;
 				}
 			}
@@ -61,40 +61,46 @@
 		
 		private function existsInDatabaseTable($rule) {
 			if (!$rule["methodArgs"]["database"]["handle"]) {
-				user_error("Database connection error: validator class has no PDO database handle. Please contact the administrator.",E_USER_WARNING);
+				array_push($this->errors, "Database connection error: validator class has no PDO database handle. Please contact the administrator.");
 				return false;
 			}
 			
 			if (!isset($rule["inputName"]) || !isset($this->input[$rule["inputName"]])) {
-				user_error("Invalid rule structure: inputName undefined or no matching entry in table.",E_USER_WARNING);
+				array_push($this->errors, (isset($rule["failMsg"]) ? $rule["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
 				return false;
 			}
 			
 			if (!isset($rule["methodArgs"]["database"]["table"]) || !isset($rule["methodArgs"]["database"]["column"])) {
-				user_error("Invalid rule structure: must provide an argument defining table, column, and search.",E_USER_WARNING);
+				array_push($this->errors, "Invalid rule structure: must provide an argument defining table, column, and search.");
 				return false;
 			}
 			
 			$dbh = $rule["methodArgs"]["database"]["handle"];
 			
-			$query = "SELECT * FROM :table WHERE :column = :search";
+		$query = "SELECT * FROM {$rule["methodArgs"]["database"]["table"]} WHERE {$rule["methodArgs"]["database"]["column"]} = :search";
 			
 			$queryHandle = $dbh->prepare($query);
-			$queryHandle->bindParam(":table",$rule["methodArgs"]["table"]);
-			$queryHandle->bindParam(":column",$rule["methodArgs"]["column"]);
-			$queryHandle->bindParam(":search",$this->input[$rule["inputName"]]);
+			
+			if (isset($rule["methodArgs"]["database"]["type"]) && $rule["methodArgs"]["database"]["type"] == "int") {
+				//print($rule["methodArgs"]["database"]["type"]);
+				$dataType = PDO::PARAM_INT;
+			} else {
+				$dataType = PDO::PARAM_STR;
+			}
+			
+			$queryHandle->bindParam(":search",$this->input[$rule["inputName"]], PDO::PARAM_INT);
 			$queryHandle->execute();
 			
 			$result = $queryHandle->fetchAll(PDO::FETCH_NUM);
 			
 			if (count($result) == 0) {
-				array_push($this->errors, "Validation error: no entry in table '" . $rule["methodArgs"]["table"] . "' with value '" . $rule["methodArgs"]["search"] . "' in column '" . $rule["methodArgs"]["column"] . "' found in database.");
+				array_push($this->errors, "Validation error: no entry in table '" . $rule["methodArgs"]["database"]["table"] . "' with value '" . $this->input[$rule["inputName"]] . "' in column '" . $rule["methodArgs"]["database"]["column"] . "' found in database.");
 			}
 		}
 		
 		private function username($rule) {
 			if (!isset($rule["inputName"]) || !isset($this->input[$rule["inputName"]])) {
-				user_error("Invalid rule structure: inputName undefined or no matching entry in table.",E_USER_WARNING);
+				array_push($this->errors, (isset($rule["failMsg"]) ? $rule["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
 				return false;
 			}
 			
@@ -104,7 +110,7 @@
 		
 		private function email($rule) {
 			if (!isset($rule["inputName"]) || !isset($this->input[$rule["inputName"]])) {
-				user_error("Invalid rule structure: inputName undefined or no matching entry in table.",E_USER_WARNING);
+				array_push($this->errors, (isset($rule["failMsg"]) ? $rule["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
 				return false;
 			}
 			
@@ -117,7 +123,7 @@
 		
 		private function password($rule) {
 			if (!isset($rule["inputName"]) || !isset($this->input[$rule["inputName"]])) {
-				user_error("Invalid rule structure: inputName undefined or no matching entry in table.",E_USER_WARNING);
+				array_push($this->errors, (isset($rule["failMsg"]) ? $rule["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
 				return false;
 			}
 			
@@ -215,11 +221,14 @@
 					case "matches":
 						$this->matches($rule);
 						break;
+					case "existsInDatabaseTable":
+						$this->existsInDatabaseTable($rule);
+						break;
 					default: //Errors if method is invalid.
-						user_error("Invalid rule structure: Invalid method.");
+						array_push($this->errors, "Invalid rule structure: Invalid method.");
 				}
 			} else {
-				user_error("Invalid rule structure: No method defined.",E_USER_NOTICE);
+				user_error("Invalid rule structure: No method defined.", E_USER_WARNING);
 			}
 		}
 		

@@ -21,12 +21,18 @@
 	}
 	
 	function spawnRankListDropMenu() {
-		global $rankList;
+		global $dbh;
+		
+		$query = "SELECT * FROM ranks ORDER BY id";
+		$queryHandle = $dbh->prepare($query);
+		$queryHandle->execute();
+		
+		$result = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
 		
 		$output = "<select name=\"rank\"><option value=\"null\" disabled selected>Combat Rank</option>";
 		
-		foreach ($rankList as $key => $rank) {
-			$output .= "<option value=\"" . $key . "\">" . $rank . "</option>";
+		foreach ($result as $rank) {
+			$output .= "<option value = \"" . $rank['id'] . "\">" . $rank['name'] . "</option>";
 		}
 		
 		$output .= "</select>";
@@ -43,7 +49,7 @@
 		
 		$result = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
 		
-		$output = "<select name=\"faction\"><option value=\"null\" disabled selected>Player Faction</option><option value=\"-1\">None/Unknown</option>";
+		$output = "<select name=\"faction\"><option value=\"null\" disabled selected>Player Faction</option>";
 	
 		foreach ($result as $faction) {
 			if (!$faction['backgroundColor']) { $faction['backgroundColor'] = "#FFFFFF"; }
@@ -65,13 +71,13 @@
 	function spawnShipListDropMenu() {
 		global $dbh;
 	
-		$query = "SELECT * FROM ships";
+		$query = "SELECT * FROM ships ORDER BY name";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->execute();
 	
 		$result = $queryHandle->fetchAll();
 	
-		$output = "<select name=\"ship\"><option value=\"null\" disabled selected>Player Ship</option><option value=\"-1\">Unknown</option>";
+		$output = "<select name=\"ship\"><option value=\"null\" disabled selected>Player Ship</option>";
 	
 		foreach ($result as $ship) {
 			$output .= "<option value = \"" . $ship['id'] . "\">" . $ship['name'] . "</option>";
