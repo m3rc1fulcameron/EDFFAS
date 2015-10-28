@@ -20,7 +20,7 @@
 		print("<script>var rankTable = new Array(" . $ranks . ");</script>");
 	}
 	
-	function spawnRankListDropMenu() {
+	function spawnRankListDropMenu($default = 0) {
 		global $dbh;
 		
 		$query = "SELECT * FROM ranks ORDER BY id";
@@ -29,18 +29,18 @@
 		
 		$result = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
 		
-		$output = "<select name=\"rank\"><option value=\"null\" disabled selected>Combat Rank</option>";
+		$output = "<select name=\"rank\">\n<option value=\"null\" disabled" . ($default == 0 ? " selected":"") . ">Combat Rank</option>\n";
 		
 		foreach ($result as $rank) {
-			$output .= "<option value = \"" . $rank['id'] . "\">" . $rank['name'] . "</option>";
+			$output .= "<option value=\"" . $rank['id'] . "\"" . ($default == $rank['id'] ? " selected":"") . ">" . $rank['name'] . "</option>\n";
 		}
 		
-		$output .= "</select>";
+		$output .= "</select>\n";
 		
 		print($output);
 	}
 	
-	function spawnFactionListDropMenu() {
+	function spawnFactionListDropMenu($default = 0) {
 		global $dbh;
 		
 		$query = "SELECT factions.id,factions.name,factions.abbreviatedName,superpowers.backgroundColor,superpowers.textColor FROM factions LEFT JOIN superpowers ON factions.allegianceID = superpowers.id ORDER BY factions.allegianceID";
@@ -49,7 +49,7 @@
 		
 		$result = $queryHandle->fetchAll(PDO::FETCH_ASSOC);
 		
-		$output = "<select name=\"faction\"><option value=\"null\" disabled selected>Player Faction</option>";
+		$output = "<select name=\"faction\">\n<option value=\"null\" disabled" . ($default == 0 ? " selected":"") . ">Player Faction</option>\n";
 	
 		foreach ($result as $faction) {
 			if (!$faction['backgroundColor']) { $faction['backgroundColor'] = "#FFFFFF"; }
@@ -60,15 +60,15 @@
 				$faction['abbreviatedName'] = '';
 			}
 			
-			$output .= "<option value = \"" . $faction['id'] . "\" style=\"background-color:" . $faction['backgroundColor'] . ";color:" . $faction['textColor'] .";\">" . $faction['name'] . $faction['abbreviatedName'] . "</option>";
+			$output .= "<option value=\"" . $faction['id'] . "\" style=\"background-color:" . $faction['backgroundColor'] . ";color:" . $faction['textColor'] .";\"" . ($default == $faction['id'] ? " selected":"") . ">" . $faction['name'] . $faction['abbreviatedName'] . "</option>\n";
 		}
 		
-		$output .= "</select>";
+		$output .= "</select>\n";
 		
 		print($output);
 	}
 	
-	function spawnShipListDropMenu() {
+	function spawnShipListDropMenu($default = 0) {
 		global $dbh;
 	
 		$query = "SELECT * FROM ships ORDER BY name";
@@ -77,18 +77,18 @@
 	
 		$result = $queryHandle->fetchAll();
 	
-		$output = "<select name=\"ship\"><option value=\"null\" disabled selected>Player Ship</option>";
+		$output = "<select name=\"ship\">\n<option value=\"null\" disabled" . ($default == 0 ? " selected":"") . ">Player Ship</option>\n";
 	
 		foreach ($result as $ship) {
-			$output .= "<option value = \"" . $ship['id'] . "\">" . $ship['name'] . "</option>";
+			$output .= "<option value=\"" . $ship['id'] . "\"" . ($default == $ship['id'] ? " selected":"") . ">" . $ship['name'] . "</option>\n";
 		}
 	
-		$output .= "</select>";
+		$output .= "</select>\n";
 	
 		print($output);
 	}
 	
-	function spawnPowerListDropMenu() {
+	function spawnPowerListDropMenu($default = 0) {
 		global $dbh;
 	
 		$query = "SELECT powers.id,powers.name,superpowers.backgroundColor,superpowers.textColor FROM powers LEFT JOIN superpowers ON powers.allegianceID = superpowers.id ORDER BY powers.allegianceID";
@@ -97,16 +97,16 @@
 	
 		$result = $queryHandle->fetchAll();
 	
-		$output = "<select name=\"power\"><option value=\"null\" disabled selected>Player Power</option>";
+		$output = "<select name=\"power\">\n<option value=\"null\" disabled" . ($default == 0 ? " selected":"") . ">Player Power</option>\n";
 	
 		foreach ($result as $power) {
 			if (!$power['backgroundColor']) { $power['backgroundColor'] = "#FFFFFF"; }
 			if (!$power['textColor']) { $power['textColor'] = "#000000"; }
 			
-			$output .= "<option value = \"" . $power['id'] . "\" style=\"background-color:" . $power['backgroundColor'] . ";color:" . $power['textColor'] .";\">" . $power['name'] . "</option>";
+			$output .= "<option value=\"" . $power['id'] . "\" style=\"background-color:" . $power['backgroundColor'] . ";color:" . $power['textColor'] .";\"" . ($default == $power['id'] ? " selected":"") . ">" . $power['name'] . "</option>\n";
 		}
 	
-		$output .= "</select>";
+		$output .= "</select>\n";
 	
 		print($output);
 	}

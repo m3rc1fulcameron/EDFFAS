@@ -13,13 +13,13 @@
 			$string = $this->input[$rule["inputName"]];
 			
 			if (isset($rule["methodArgs"]["len"]["min"]) && $rule["methodArgs"]["len"]["min"] !== -1) {
-				if (strlen($string) <= $rule["methodArgs"]["len"]["min"]) {
+				if (strlen($string) < $rule["methodArgs"]["len"]["min"]) {
 					array_push($this->errors, (isset($rule["methodArgs"]["len"]["failMsg"]) ? $rule["methodArgs"]["len"]["failMsg"]:"Validation error: supplied string is too short."));
 				}
 			}
 			
 			if (isset($rule["methodArgs"]["len"]["max"]) && $rule["methodArgs"]["len"]["max"] !== -1) {
-				if (strlen($string) >= $rule["methodArgs"]["len"]["max"]) {
+				if (strlen($string) > $rule["methodArgs"]["len"]["max"]) {
 					array_push($this->errors, (isset($rule["methodArgs"]["len"]["failMsg"]) ? $rule["methodArgs"]["len"]["failMsg"]:"Validation error: supplied string is too long."));
 				}
 			}
@@ -45,7 +45,7 @@
 				
 				for ($i=1;$i<count($strings);$i++) {
 					if (strtolower($this->input[$strings[$i]]) != $base) {
-						array_push($this->errors, "Validation error: string '" . $strings[$i] . "' (" . $this->input[$strings[$i]] . ") does not match string '" . $strings[0] . "' (" . $base . ").");
+						array_push($this->errors, (isset($rule["methodArgs"]["failMsg"]) ? $rule["methodArgs"]["failMsg"] : "Validation error: string '" . $strings[$i] . "' (" . $this->input[$strings[$i]] . ") does not match string '" . $strings[0] . "' (" . $base . ")."));
 					}
 				}
 			} else {
@@ -53,13 +53,13 @@
 				
 				for ($i=1;$i<count($strings);$i++) {
 					if ($this->input[$strings[$i]] != $base) {
-						array_push($this->errors, "Validation error: string '" . $strings[$i] . "' (" . $this->input[$strings[$i]] . ") does not match string '" . $strings[0] . "' (" . $base . ").");
+						array_push($this->errors, (isset($rule["methodArgs"]["failMsg"]) ? $rule["methodArgs"]["failMsg"] : "Validation error: string '" . $strings[$i] . "' (" . $this->input[$strings[$i]] . ") does not match string '" . $strings[0] . "' (" . $base . ")."));
 					}
 				}
 			}
 		}
 		
-		private function existsInDatabaseTable($rule) {
+		private function existsInDatabaseTable($rule) {			
 			if (!$rule["methodArgs"]["database"]["handle"]) {
 				array_push($this->errors, "Database connection error: validator class has no PDO database handle. Please contact the administrator.");
 				return false;
@@ -77,7 +77,7 @@
 			
 			$dbh = $rule["methodArgs"]["database"]["handle"];
 			
-		$query = "SELECT * FROM {$rule["methodArgs"]["database"]["table"]} WHERE {$rule["methodArgs"]["database"]["column"]} = :search";
+			$query = "SELECT * FROM {$rule["methodArgs"]["database"]["table"]} WHERE {$rule["methodArgs"]["database"]["column"]} = :search";
 			
 			$queryHandle = $dbh->prepare($query);
 			
@@ -88,14 +88,23 @@
 				$dataType = PDO::PARAM_STR;
 			}
 			
-			$queryHandle->bindParam(":search",$this->input[$rule["inputName"]], PDO::PARAM_INT);
+			$queryHandle->bindParam(":search",$this->input[$rule["inputName"]], $dataType);
 			$queryHandle->execute();
 			
 			$result = $queryHandle->fetchAll(PDO::FETCH_NUM);
 			
-			if (count($result) == 0) {
-				array_push($this->errors, "Validation error: no entry in table '" . $rule["methodArgs"]["database"]["table"] . "' with value '" . $this->input[$rule["inputName"]] . "' in column '" . $rule["methodArgs"]["database"]["column"] . "' found in database.");
+			if (isset($rule["methodArgs"]["database"]["negate"]) && $rule["methodArgs"]["database"]["negate"]) {
+				if (count($result) != 0) {
+					$defaultError = "Validation error: entry in table '" . $rule["methodArgs"]["database"]["table"] . "' with value '" . $this->input[$rule["inputName"]] . "' in column '" . $rule["methodArgs"]["database"]["column"] . "' found in database.";
+					array_push($this->errors, (isset($rule["methodArgs"]["database"]["failMsg"]) ? $rule["methodArgs"]["database"]["failMsg"] : $defaultError));
+				}
+			} else {
+				if (count($result) == 0) {
+					$defaultError = "Validation error: no entry in table '" . $rule["methodArgs"]["database"]["table"] . "' with value '" . $this->input[$rule["inputName"]] . "' in column '" . $rule["methodArgs"]["database"]["column"] . "' found in database.";
+					array_push($this->errors, (isset($rule["methodArgs"]["database"]["failMsg"]) ? $rule["methodArgs"]["database"]["failMsg"] : $defaultError));
+				}
 			}
+			
 		}
 		
 		private function username($rule) {
@@ -110,14 +119,14 @@
 		
 		private function email($rule) {
 			if (!isset($rule["inputName"]) || !isset($this->input[$rule["inputName"]])) {
-				array_push($this->errors, (isset($rule["failMsg"]) ? $rule["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
+				array_push($this->errors, (isset($rule["methodArgs"]["failMsg"]) ? $rule["methodArgs"]["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
 				return false;
 			}
 			
 			$email = $this->input[$rule["inputName"]];
 			
 			if (!filter_var($email,FILTER_VALIDATE_EMAIL)) {
-				array_push($this->errors, (isset($this->input[$rule["inputName"]]["methodArgs"]["failMsg"]) ? $this->input[$rule["inputName"]]["methodArgs"]["failMsg"]:"Validation error: invalid email address"));
+				array_push($this->errors, (isset($rule["methodArgs"]["failMsg"]) ? $rule["methodArgs"]["failMsg"]:"Validation error: invalid email address"));
 			}
 		}
 		
@@ -206,6 +215,23 @@
 			}
 		}
 		
+		private function checked($rule) {
+			if (!isset($rule["inputName"]) || !isset($this->input[$rule["inputName"]])) {
+				array_push($this->errors, (isset($rule["failMsg"]) ? $rule["failMsg"]:"Invalid rule structure: inputName undefined or no matching entry in table."));
+				return false;
+			}
+			
+			if (isset($rule["methodArgs"]["negate"]) && $rule["methodArgs"]["negate"]) {
+				if ($this->input[$rule["inputName"]] == "on") {
+					array_push($this->errors, (isset($rule["methodArgs"]["failMsg"]) ? $rule["methodArgs"]["failMsg"] : "Validation error: input checked."));
+				}
+			} else {
+				if ($this->input[$rule["inputName"]] != "on") {
+					array_push($this->errors, (isset($rule["methodArgs"]["failMsg"]) ? $rule["methodArgs"]["failMsg"] : "Validation error: input not checked."));
+				}
+			}
+		}
+		
 		private function singleValidate(array $rule) {
 			if (isset($rule["method"])) { //Check to see if method is defined within the rule.
 				switch ($rule["method"]) {
@@ -223,6 +249,9 @@
 						break;
 					case "existsInDatabaseTable":
 						$this->existsInDatabaseTable($rule);
+						break;
+					case "checked":
+						$this->checked($rule);
 						break;
 					default: //Errors if method is invalid.
 						array_push($this->errors, "Invalid rule structure: Invalid method.");

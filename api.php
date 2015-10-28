@@ -18,7 +18,7 @@
 				case 'comprehensive':
 					print(json_encode(playerComprehensiveLookupByName($_REQUEST['name'])));
 					break;
-				case 'default':
+				default:
 					die('{"error" : "apiInvalidTarget"}');
 			}
 		} else {

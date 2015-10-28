@@ -15,15 +15,20 @@ function spawnCard(player) {
 		
 		$(cardSelector).html('\
 			<div class="playerCardBody"></div>\
-			<div class="playerCardControls">\
-				<a href="#" title="Refresh Card" class="playerCardRefreshButton"><img src="img/refresh.png"></a>\
-				<a href="#" title="Dismiss Card" class="playerCardDismissButton"><img src="img/trash.png"></a>\
+			<div>\
+				<div class="playerCardUpdated text">Updated on ' + player.updated + '</div>\
+				<div class="playerCardControls">\
+					<a href="submit.php?p=' + player.name + '&f=' + player.factionID + '&pw=' + player.powerID + '&r=' + player.rankID + '&s='+ player.shipID + '" title="Edit Card"><img src="img/edit2.png"></a>\
+					<a href="#" title="Refresh Card" class="playerCardRefreshButton"><img src="img/refresh.png"></a>\
+					<a href="#" title="Dismiss Card" class="playerCardDismissButton"><img src="img/trash.png"></a>\
+				</div>\
+				<div style="clear:both"></div>\
 			</div>\
 		');
 		
 		$(cardSelector + ' .playerCardControls .playerCardDismissButton').click(function() {
 			$(this).parent().children().off('click');
-			$(this).parent().parent().slideUp(function() {
+			$(this).parent().parent().parent().slideUp(function() {
 				$(this).remove();
 			});
 			
@@ -103,10 +108,10 @@ function spawnCard(player) {
 	
 	//Basic Info
 	var title = player.name
-	if (player.power) {
+	if (player.power && player.power.name != "None/Unknown") {
 		title += ' <span class="textBlob" style="background-color:' + player.power.backgroundColor + ';color:' + player.power.textColor + '">(' + player.power.name + ')</span>';
 	}
-	if (player.faction) {
+	if (player.faction && player.faction.name != "None/Unknown") {
 		title += ' <span class="textBlob" style="background-color:' + player.faction.backgroundColor + ';color:' + player.faction.textColor + '">[' + (player.faction.abbreviatedName || player.faction.name) + ']</span>';
 	}
 	
@@ -115,7 +120,7 @@ function spawnCard(player) {
 	if (player.notes) {
 		notes = '\
 			<div class="playerCardNotes">\
-				<p>&quot;' + player.notes + '&quot;</p>\
+				<p>' + player.notes + '</p>\
 			</div>\
 		';
 	}

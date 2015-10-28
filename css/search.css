@@ -53,10 +53,10 @@
 .playerCardContainer {
 	margin-top:10px;
 	display:none;
+	background-color:white;
 }
 
 .playerCardBody {
-	background-color:white;
 	padding:10px 5px 10px 5px;
 }
 
@@ -87,10 +87,14 @@
 	text-align:right;
 }
 
+.playerCardUpdated {
+	float:left
+}
+
 .playerCardControls {
-	background-color:white;
-	text-align:right;
+	float:right;
 	padding:5px;
+	background-color:white;
 }
 
 .playerCardControls a {

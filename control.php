@@ -11,15 +11,6 @@
 		secureSessionStart();
 	};
 	
-	if (DEBUG) {
-		print (isset($_SESSION["isAdmin"]) ? "isAdmin is set.<br>":"isAdmin is not set.<br>");
-		print (isset($_SESSION["isAdmin"]) ? $_SESSION["isAdmin"] . "<br>":"isAdmin is not set.<br>");
-	}
-	
-	if (!isset($_SESSION["isAdmin"]) || $_SESSION["isAdmin"] !== "1") {
-		header("Location: index.php");
-	}
-	
 	$success = array();
 	
 	if (!checkCSRFToken() && isset($_REQUEST) && !empty($_REQUEST)) {

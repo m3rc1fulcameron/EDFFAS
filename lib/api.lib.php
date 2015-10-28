@@ -80,7 +80,7 @@
 		global $dbh;
 		
 		//Get name, ID, factionID, powerID, notes, rank name, and ship name.
-		$query = "SELECT players.name,players.id,players.factionID,players.powerID,players.notes,ranks.name AS rank,ships.name AS ship FROM players LEFT JOIN ranks ON players.rankID = ranks.id LEFT JOIN ships ON players.shipID = ships.id WHERE players.name = :name";
+		$query = "SELECT players.name,players.id,players.factionID,players.powerID,players.notes,players.updated,ranks.name AS rank,ranks.id AS rankID,ships.name AS ship,ships.id AS shipID FROM players LEFT JOIN ranks ON players.rankID = ranks.id LEFT JOIN ships ON players.shipID = ships.id WHERE players.name = :name";
 		$queryHandle = $dbh->prepare($query);
 		$queryHandle->bindParam(":name",$name);
 		$queryHandle->execute();
